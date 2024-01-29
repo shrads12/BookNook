@@ -59,7 +59,7 @@ export function BooksTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {books.map((book) => (
+            {books?.map((book) => (
               <TableRow
                 key={book.id}
                 onClick={() => setSelectedBook(book)}

@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   entry: "./src/client/index.tsx",
   output: {
-    path: path.resolve(__dirname, "dist", "public"),
+    path: path.resolve(__dirname, "dist", "static"),
     filename: "bundle.js",
   },
   resolve: {

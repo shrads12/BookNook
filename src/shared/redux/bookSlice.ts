@@ -17,26 +17,28 @@ interface BookState {
 }
 
 const initialState: BookState = {
-  books: [
-    { id: 1, title: "The Silent Observer", category: "Mystery", price: 15.99 },
-    {
-      id: 2,
-      title: "Exploring the Cosmos",
-      category: "Science Fiction",
-      price: 12.5,
-    },
-    { id: 3, title: "Cooking Delights", category: "Cookbook", price: 20.99 },
-    {
-      id: 4,
-      title: "Historical Perspectives",
-      category: "History",
-      price: 18.75,
-    },
-    { id: 5, title: "Poetry in Motion", category: "Poetry", price: 14.95 },
-  ],
+  books: [],
   loading: false,
   error: null,
 };
+
+const booksData = [
+  { id: 1, title: "The Silent Observer", category: "Mystery", price: 15.99 },
+  {
+    id: 2,
+    title: "Exploring the Cosmos",
+    category: "Science Fiction",
+    price: 12.5,
+  },
+  { id: 3, title: "Cooking Delights", category: "Cookbook", price: 20.99 },
+  {
+    id: 4,
+    title: "Historical Perspectives",
+    category: "History",
+    price: 18.75,
+  },
+  { id: 5, title: "Poetry in Motion", category: "Poetry", price: 14.95 },
+];
 
 const bookSlice = createSlice({
   name: "books",
@@ -89,8 +91,8 @@ export const fetchBooks =
   async (dispatch) => {
     try {
       dispatch(start());
-      await mockFetch();
-      dispatch(fetchBooksSuccess());
+      const books = await mockFetch();
+      dispatch(fetchBooksSuccess(books));
     } catch (e) {
       dispatch(error(e.message || "An error occurred"));
     }
@@ -140,9 +142,9 @@ export const deleteBook =
   };
 
 async function mockFetch() {
-  return new Promise<void>((resolve) => {
+  return new Promise<Book[]>((resolve) => {
     setTimeout(() => {
-      resolve();
+      resolve(booksData);
     }, 1000);
   });
 }

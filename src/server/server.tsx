@@ -2,18 +2,20 @@ import React from "react";
 import express from "express";
 import { renderToString } from "react-dom/server";
 import { Provider } from "react-redux";
-import { store } from "../shared/redux/store";
+import { configureAppStore, RootState } from "../shared/redux/store";
 import { StaticRouter } from "react-router-dom/server";
 import { App } from "../client/App";
 import path from "path";
 import fs from "fs";
+import { fetchBooks } from "../shared/redux/bookSlice";
 
 const app = express();
 
-app.use(express.static("dist/public"));
+app.use("/static", express.static("dist/static"));
 
-app.get("/", (req, res) => {
-  const context = {};
+app.get("/", async (req, res) => {
+  const store = configureAppStore();
+  await store.dispatch(fetchBooks());
 
   const appMarkup = renderToString(
     <Provider store={store}>
@@ -22,19 +24,29 @@ app.get("/", (req, res) => {
       </StaticRouter>
     </Provider>
   );
-  const indexFile = path.resolve("dist/index.html");
-  fs.readFile(indexFile, "utf-8", (err, data) => {
-    if (err) {
-      return res.status(500).send("An error occured");
-    }
-
-    const response = data.replace(
-      '<div id="root"></div>',
-      `<div id="root">${appMarkup}</div>`
-    );
-    return res.send(response);
-  });
+  res.send(renderFullPage(appMarkup, store.getState()));
 });
+
+function renderFullPage(html: string, preloadedState: RootState) {
+  return `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Redux Universal Example</title>
+    </head>
+    <body>
+      <div id="root">${html}</div>
+      <script>
+        window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(
+          /</g,
+          "\\u003c"
+        )}
+      </script>
+      <script src="/static/bundle.js"></script>
+    </body>
+  </html>
+  `;
+}
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
