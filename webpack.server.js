@@ -4,8 +4,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   entry: "./src/server/server.tsx",
   output: {
-    filename: "server-bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "functions", "dist"),
     libraryTarget: "commonjs2",
   },
   resolve: {

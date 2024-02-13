@@ -1,3 +1,11 @@
 node_modules/
 dist/
 !dist/index.html
+.firebaserc
+firebase.json
+.firebase
+.DS_Store
+
+hosting/public/*
+functions/lib/*
+functions/dist/*

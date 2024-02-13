@@ -9,11 +9,16 @@ import path from "path";
 import fs from "fs";
 import { fetchBooks } from "../shared/redux/bookSlice";
 
-const app = express();
+// const scriptUrl =
+//   process.env.NODE_ENV === "production"
+//     ? "https://shraddha-booknook.web.app/bundle.js"
+//     : "/static/bundle.js";
 
-app.use("/static", express.static("dist/static"));
+const server = express();
 
-app.get("/", async (req, res) => {
+server.use("/static", express.static("hosting/public"));
+
+server.get("/", async (req, res) => {
   const store = configureAppStore();
   await store.dispatch(fetchBooks());
 
@@ -42,13 +47,15 @@ function renderFullPage(html: string, preloadedState: RootState) {
           "\\u003c"
         )}
       </script>
-      <script src="/static/bundle.js"></script>
+      <script type="text/javascript" src="https://shraddha-booknook.web.app/bundle.js"></script>
     </body>
   </html>
   `;
 }
+// Uncomment this when testing locally
+// const port = process.env.PORT || 3000;
+// server.listen(port, () => {
+//   console.log(`Server is listening on port ${port}`);
+// });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-});
+export { server };

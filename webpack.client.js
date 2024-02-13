@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   entry: "./src/client/index.tsx",
   output: {
-    path: path.resolve(__dirname, "dist", "static"),
+    path: path.resolve(__dirname, "hosting", "public"),
     filename: "bundle.js",
   },
   resolve: {
@@ -32,6 +32,7 @@ module.exports = {
             loader: "css-loader",
           },
         ],
+        exclude: /node_modules/,
       },
     ],
   },
